@@ -1,0 +1,8 @@
+#posts
+  .posts-wrapper
+    = render @posts
+
+- np = link_to_next_page @posts, 'LOAD MORE', id: 'load_more', remote: true
+- unless np.blank?
+  #paginator.text-center
+    = np

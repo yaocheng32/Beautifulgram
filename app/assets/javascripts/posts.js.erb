@@ -1,0 +1,99 @@
+var loadFile = function(event) {
+  var output = document.getElementById('image-preview');
+  output.src = URL.createObjectURL(event.target.files[0]);
+};
+
+function customInfiniteScroll(containerSelector, itemSelector) {
+  var container = $(containerSelector);
+  container.infinitescroll({
+    navSelector  : '#paginator',    // selector for the paged navigation
+    nextSelector : 'a#load_more',  // selector for the NEXT link (to page 2)
+    itemSelector : itemSelector,     // selector for all items you'll retrieve
+    loading: {
+        finishedMsg: 'No more pages to load.',
+        msgText: '',
+        img: 'http://i.imgur.com/6RMhx.gif'
+        //img: "<%= asset_path('loading.gif') %>"
+      }
+    },
+    // trigger Masonry as a callback
+    function( newElements ) {
+      // hide new items while they are loading
+      var $newElems = $( newElements ).css({ opacity: 0 });
+      // ensure that images load before adding to masonry layout
+      $newElems.imagesLoaded(function(){
+        // show elems now they're ready
+        $newElems.animate({ opacity: 1 });
+        container.masonry( 'appended', $newElems, true );
+      });
+    }
+  );
+}
+
+$(function() {
+  var gal = $('.gallery');
+
+  gal.imagesLoaded(function() {
+    gal.masonry({
+      itemSelector: '.gallery-box',
+      isFitWidth: true
+    });
+  });
+
+  customInfiniteScroll('.gallery', '.gallery-box');
+  //customInfiniteScroll('.posts-wrapper', '.post');
+
+  /*
+  gal.infinitescroll({
+    navSelector  : '#paginator',    // selector for the paged navigation
+    nextSelector : 'a#load_more',  // selector for the NEXT link (to page 2)
+    itemSelector : '.gallery-box',     // selector for all items you'll retrieve
+    loading: {
+        finishedMsg: 'No more pages to load.',
+        msgText: '',
+        img: 'http://i.imgur.com/6RMhx.gif'
+        //img: "<%= asset_path('small-loading.gif') %>"
+      }
+    },
+    // trigger Masonry as a callback
+    function( newElements ) {
+      // hide new items while they are loading
+      var $newElems = $( newElements ).css({ opacity: 0 });
+      // ensure that images load before adding to masonry layout
+      $newElems.imagesLoaded(function(){
+        // show elems now they're ready
+        $newElems.animate({ opacity: 1 });
+        gal.masonry( 'appended', $newElems, true );
+      });
+    }
+  );
+
+
+  /*
+  var postsdiv = $('.posts-wrapper');
+
+  postsdiv.infinitescroll({
+    navSelector  : '#paginator',    // selector for the paged navigation
+    nextSelector : 'a#load_more',  // selector for the NEXT link (to page 2)
+    itemSelector : '.post',     // selector for all items you'll retrieve
+    loading: {
+        finishedMsg: 'No more pages to load.',
+        msgText: '',
+        img: 'http://i.imgur.com/6RMhx.gif'
+      }
+    },
+    // trigger Masonry as a callback
+    function( newElements ) {
+      // hide new items while they are loading
+      var $newElems = $( newElements ).css({ opacity: 0 });
+      // ensure that images load before adding to masonry layout
+      $newElems.imagesLoaded(function(){
+        // show elems now they're ready
+        $newElems.animate({ opacity: 1 });
+        postsdiv.masonry( 'appended', $newElems, true );
+      });
+    }
+  );
+  */
+
+});
